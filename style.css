@@ -1,0 +1,123 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f0f0f0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.calculator {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+    max-width: 400px;
+    width: 100%;
+}
+
+.display {
+    margin-bottom: 20px;
+}
+
+#result {
+    width: 100%;
+    height: 60px;
+    font-size: 1.5em;
+    text-align: right;
+    padding: 0 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: white;
+    color: #333;
+    outline: none;
+    font-weight: normal;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.btn {
+    height: 60px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1.2em;
+    font-weight: normal;
+    cursor: pointer;
+    outline: none;
+}
+
+.btn:active {
+    background: #e0e0e0;
+}
+
+.btn.number {
+    background: #f9f9f9;
+    color: #333;
+}
+
+.btn.operator {
+    background: #007acc;
+    color: white;
+}
+
+.btn.equals {
+    background: #28a745;
+    color: white;
+    grid-row: span 2;
+    height: 130px;
+}
+
+.btn.clear {
+    background: #dc3545;
+    color: white;
+}
+
+.btn.zero {
+    grid-column: span 2;
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+    .calculator {
+        padding: 15px;
+        margin: 10px;
+    }
+    
+    #result {
+        height: 50px;
+        font-size: 1.3em;
+    }
+    
+    .btn {
+        height: 50px;
+        font-size: 1em;
+    }
+    
+    .btn.equals {
+        height: 110px;
+    }
+    
+    .buttons {
+        gap: 8px;
+    }
+}/* Focus styling voor accessibility */
+.btn:focus {
+    outline: 2px solid #007acc;
+    outline-offset: 1px;
+}
+
+#result:focus {
+    border-color: #007acc;
+}

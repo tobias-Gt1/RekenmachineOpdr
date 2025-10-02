@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="style.css">
+    <title>Rekenmachine</title>
+</head>
+<body>
+    <div class="calculator">
+        <div class="display">
+            <input type="text" id="result" readonly>
+        </div>
+        <div class="buttons">
+            <button class="btn clear" onclick="clearDisplay()">C</button>
+            <button class="btn clear" onclick="deleteLast()">⌫</button>
+            <button class="btn operator" onclick="appendToDisplay('/')" data-value="/">÷</button>
+            <button class="btn operator" onclick="appendToDisplay('*')" data-value="*">×</button>
+            
+            <button class="btn number" onclick="appendToDisplay('7')" data-value="7">7</button>
+            <button class="btn number" onclick="appendToDisplay('8')" data-value="8">8</button>
+            <button class="btn number" onclick="appendToDisplay('9')" data-value="9">9</button>
+            <button class="btn operator" onclick="appendToDisplay('-')" data-value="-">-</button>
+            
+            <button class="btn number" onclick="appendToDisplay('4')" data-value="4">4</button>
+            <button class="btn number" onclick="appendToDisplay('5')" data-value="5">5</button>
+            <button class="btn number" onclick="appendToDisplay('6')" data-value="6">6</button>
+            <button class="btn operator" onclick="appendToDisplay('+')" data-value="+">+</button>
+            
+            <button class="btn number" onclick="appendToDisplay('1')" data-value="1">1</button>
+            <button class="btn number" onclick="appendToDisplay('2')" data-value="2">2</button>
+            <button class="btn number" onclick="appendToDisplay('3')" data-value="3">3</button>
+            <button class="btn equals" onclick="calculate()" rowspan="2">=</button>
+            
+            <button class="btn number zero" onclick="appendToDisplay('0')" data-value="0">0</button>
+            <button class="btn number" onclick="appendToDisplay('.')" data-value=".">.</button>
+        </div>
+    </div>
+
+    <script>
+        let display = document.getElementById('result');
+        let currentInput = '';
+        let operator = '';
+        let previousInput = '';
+        let shouldResetDisplay = false;
+
+        function appendToDisplay(value) {
+            if (shouldResetDisplay) {
+                display.value = '';
+                shouldResetDisplay = false;
+            }
+            
+            // Voorkom meerdere punten in hetzelfde getal
+            if (value === '.') {
+                // Zoek het laatste getal in de expressie
+                let currentExpression = display.value;
+                let lastNumberMatch = currentExpression.match(/[\d.]*$/);
+                let lastNumber = lastNumberMatch ? lastNumberMatch[0] : '';
+                
+                // Als het laatste getal al een punt bevat, voeg geen nieuwe toe
+                if (lastNumber.includes('.')) {
+                    return;
+                }
+            }
+            
+            // Voorkom meerdere operators achter elkaar
+            if (isOperator(value) && isOperator(display.value.slice(-1))) {
+                display.value = display.value.slice(0, -1) + value;
+                return;
+            }
+            
+            display.value += value;
+        }
+
+        function clearDisplay() {
+            display.value = '';
+            currentInput = '';
+            operator = '';
+            previousInput = '';
+        }
+
+        function deleteLast() {
+            display.value = display.value.slice(0, -1);
+        }
+
+        function calculate() {
+            try {
+                if (display.value === '') return;
+                
+                // Vervang × en ÷ symbolen voor evaluatie
+                let expression = display.value.replace(/×/g, '*').replace(/÷/g, '/');
+                
+                // Evalueer de expressie
+                let result = eval(expression);
+                
+                // Rond af tot maximaal 10 decimalen
+                if (result % 1 !== 0) {
+                    result = parseFloat(result.toFixed(10));
+                }
+                
+                display.value = result;
+                shouldResetDisplay = true;
+            } catch (error) {
+                display.value = 'Fout';
+                shouldResetDisplay = true;
+            }
+        }
+
+        function isOperator(char) {
+            return ['+', '-', '*', '/', '×', '÷'].includes(char);
+        }
+
+        // Toetsenbord ondersteuning
+        document.addEventListener('keydown', function(event) {
+            const key = event.key;
+            
+            if (key >= '0' && key <= '9') {
+                appendToDisplay(key);
+            } else if (key === '.') {
+                appendToDisplay('.');
+            } else if (key === '+') {
+                appendToDisplay('+');
+            } else if (key === '-') {
+                appendToDisplay('-');
+            } else if (key === '*') {
+                appendToDisplay('*');
+            } else if (key === '/') {
+                event.preventDefault();
+                appendToDisplay('/');
+            } else if (key === 'Enter' || key === '=') {
+                event.preventDefault();
+                calculate();
+            } else if (key === 'Escape' || key === 'c' || key === 'C') {
+                clearDisplay();
+            } else if (key === 'Backspace') {
+                deleteLast();
+            }
+        });
+    </script>
+</body>
+</html>
